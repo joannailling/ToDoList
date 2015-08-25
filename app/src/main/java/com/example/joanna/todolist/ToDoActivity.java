@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class ToDoActivity extends AppCompatActivity {
+    // Testing git commit
     ArrayList<String> items;
     ArrayAdapter<String> itemsAdapter;
     ListView lvItems;
