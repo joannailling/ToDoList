@@ -4,6 +4,7 @@ package com.example.joanna.todolist;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,30 +19,39 @@ import org.apache.commons.io.FileUtils;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 public class ToDoActivity extends AppCompatActivity {
-    // Testing git commit
-    ArrayList<String> items;
-    ArrayAdapter<String> itemsAdapter;
-    ListView lvItems;
+    ArrayList<ToDoItem> items;
+    ArrayList<String> itemStrings;
 
+    ArrayAdapter<String> itemStringsAdapter;
+    ListView lvItems;
+    ToDoItemDatabase db;
 
     static final String TODO_ITEM_DETAIL_KEY = "ToDoItemDetailKey";
     static final String TODO_POSITION_KEY = "ToDoPosition";
-    static final String TODO_FILE = "todo.txt";
+    static final String TODO_ITEM_OBJECT_KEY = "ToDoItemObjectKey";
+
     private final int REQUEST_CODE = 20;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_todo);
+
         lvItems = (ListView)findViewById(R.id.lvItems);
+
+        // get singleton instance of database
+        db = ToDoItemDatabase.getInstance(this);
+       // db.deleteAllToDoItems();
         readItems();
-        itemsAdapter = new ArrayAdapter<>(this,
-                android.R.layout.simple_list_item_1,items);
-        lvItems.setAdapter(itemsAdapter);
-        //items.add("First Item");
-        //items.add("Second Item");
+
+        itemStringsAdapter = new ArrayAdapter<>(this,
+                android.R.layout.simple_list_item_1, itemStrings);
+        lvItems.setAdapter(itemStringsAdapter);
+
+
 
         //Show action bar icon
         getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -60,9 +70,11 @@ public class ToDoActivity extends AppCompatActivity {
                     @Override
                     public boolean onItemLongClick(AdapterView<?> adapter,
                                                    View item, int pos, long id) {
-                        items.remove(pos);
-                        itemsAdapter.notifyDataSetChanged();
-                        writeItems();
+                        db.deleteToDoItem(itemStrings.get(pos));
+                        itemStrings.remove(pos);
+                        itemStringsAdapter.notifyDataSetChanged();
+                        //    writeItems();
+
                         return true;
                     }
                 }
@@ -78,6 +90,9 @@ public class ToDoActivity extends AppCompatActivity {
                         Intent i = new Intent(ToDoActivity.this, EditItemActivity.class);
                         i.putExtra(TODO_POSITION_KEY, position);
                         i.putExtra(TODO_ITEM_DETAIL_KEY, (String) lvItems.getItemAtPosition(position));
+                        i.putExtra(TODO_ITEM_OBJECT_KEY, items.get(position).getId());
+                        // delete item and re-add edited text item instead of update
+                        db.deleteToDoItem((String) lvItems.getItemAtPosition(position));
                         startActivityForResult(i, REQUEST_CODE);
                     }
                 }
@@ -87,29 +102,37 @@ public class ToDoActivity extends AppCompatActivity {
     public void onAddItem(View v) {
         EditText etNewItem = (EditText)findViewById(R.id.etNewItem);
         String itemText = etNewItem.getText().toString();
-        itemsAdapter.add(itemText);
+        itemStringsAdapter.add(itemText);
         etNewItem.setText("");
-        writeItems();
+
+        ToDoItem newItem = new ToDoItem(itemText, null, 0);
+        long primaryKey = writeItem(newItem);
+        newItem.setId(primaryKey);
+        items.add(newItem);
     }
 
     private void readItems() {
-        File filesDir = getFilesDir();
-        File todoFile = new File(filesDir, TODO_FILE);
         try {
-            items = new ArrayList<String>(FileUtils.readLines(todoFile));
-        } catch (IOException e) {
-            items = new ArrayList<String>();
+            items = db.getAllToDoItems();
+            itemStrings = new ArrayList<String>();
+            for (ToDoItem tdi : items ) {
+                itemStrings.add(tdi.getItem());
+            }
+        } catch (Exception e) {
+            itemStrings = new ArrayList<String>();
         }
+
     }
 
-    private void writeItems() {
-        File filesDir = getFilesDir();
-        File todoFile = new File(filesDir, TODO_FILE);
+    private long writeItem(ToDoItem tdi) {
+        long key;
         try {
-            FileUtils.writeLines(todoFile, items);
-        } catch (IOException e) {
+            key = db.addOrUpdateToDoItem(tdi);
+        } catch (Exception e) {
             e.printStackTrace();
+            key = -1;
         }
+        return key;
     }
 
     @Override
@@ -117,9 +140,12 @@ public class ToDoActivity extends AppCompatActivity {
         if (resultCode == RESULT_OK && requestCode == REQUEST_CODE) {
             String editedText = data.getExtras().getString(TODO_ITEM_DETAIL_KEY);
             int itemPosition = data.getExtras().getInt(TODO_POSITION_KEY);
-            items.set(itemPosition, editedText);
-            itemsAdapter.notifyDataSetChanged();
-            writeItems();
+    //        ToDoItem tdi = (ToDoItem)data.getSerializableExtra(TODO_ITEM_OBJECT_KEY);
+            ToDoItem tdi = items.get(itemPosition);
+            tdi.setItem(editedText);
+            itemStrings.set(itemPosition, editedText);
+            itemStringsAdapter.notifyDataSetChanged();
+            writeItem(tdi);
         }
     }
 

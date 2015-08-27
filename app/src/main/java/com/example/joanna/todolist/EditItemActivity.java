@@ -77,6 +77,7 @@ public class EditItemActivity extends AppCompatActivity {
                         data.putExtra(TODO_POSITION_KEY, posOfEditedItem);
                         data.putExtra(TODO_ITEM_DETAIL_KEY, etEditedText.getText().toString());
                         setResult(RESULT_OK, data);
+
                         finish();
                     }
                 }
