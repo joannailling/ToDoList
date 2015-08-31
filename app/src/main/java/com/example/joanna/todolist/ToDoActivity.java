@@ -1,15 +1,20 @@
 package com.example.joanna.todolist;
 
 
+import android.app.DatePickerDialog;
+import android.app.Dialog;
+import android.app.DialogFragment;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -18,8 +23,11 @@ import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 public class ToDoActivity extends AppCompatActivity {
     ArrayList<ToDoItem> items;
@@ -29,11 +37,13 @@ public class ToDoActivity extends AppCompatActivity {
 
     ArrayAdapter<String> itemStringsAdapter;
     ListView lvItems;
+    EditText etDueDate;
     ToDoItemDatabase db;
 
     static final String TODO_ITEM_DETAIL_KEY = "ToDoItemDetailKey";
     static final String TODO_POSITION_KEY = "ToDoPosition";
     static final String TODO_ITEM_OBJECT_KEY = "ToDoItemObjectKey";
+    static final String TAG = "ToDoActivity.java";
 
     private final int REQUEST_CODE = 20;
 
@@ -48,6 +58,7 @@ public class ToDoActivity extends AppCompatActivity {
         readItems();
 
         lvItems = (ListView)findViewById(R.id.lvItems);
+        etDueDate = (EditText)findViewById(R.id.etToDoDate);
         myAdapter = new ToDoItemAdapter(this, items);
         lvItems.setAdapter(myAdapter);
 
@@ -64,6 +75,7 @@ public class ToDoActivity extends AppCompatActivity {
 
     }
 
+
     private void setupListViewListener() {
         // Long click is used to delete an item from the list
         lvItems.setOnItemLongClickListener(
@@ -73,7 +85,7 @@ public class ToDoActivity extends AppCompatActivity {
                     public boolean onItemLongClick(AdapterView<?> adapter,
                                                    View item, int pos, long id) {
                         db.deleteToDoItem(items.get(pos).getItem());
-                       // itemStrings.remove(pos);
+                        // itemStrings.remove(pos);
                         items.remove(pos);
                         //itemStringsAdapter.notifyDataSetChanged();
                         myAdapter.notifyDataSetChanged();
@@ -105,18 +117,21 @@ public class ToDoActivity extends AppCompatActivity {
         );
     }
 
-    public void onAddItem(View v) {
+    protected void onAddItem(View v) {
         EditText etNewItem = (EditText)findViewById(R.id.etNewItem);
         String itemText = etNewItem.getText().toString();
-     //   itemStringsAdapter.add(itemText);
-        etNewItem.setText("");
+        if (!itemText.isEmpty()) { //don't allow empty todoitems
+            //   itemStringsAdapter.add(itemText);
+            etNewItem.setText("");
 
-        ToDoItem newItem = new ToDoItem(itemText, null, 0);
-        long primaryKey = writeItem(newItem);
-        newItem.setId(primaryKey);
-        newItem.setDueDate("08/29/2015");
-        //items.add(newItem);
-        myAdapter.add(newItem);
+            ToDoItem newItem = new ToDoItem(itemText, null, 0);
+            long primaryKey = writeItem(newItem);
+            newItem.setId(primaryKey);
+            newItem.setDueDate("08/29/2015");
+            //items.add(newItem);
+            myAdapter.add(newItem);
+        }
+
     }
 
     private void readItems() {
@@ -181,4 +196,6 @@ public class ToDoActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+
 }
