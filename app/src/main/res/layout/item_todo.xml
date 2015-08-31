@@ -8,28 +8,21 @@
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:layout_gravity="center_vertical">
+        android:layout_height="40dp">
 
         <TextView
             android:id="@+id/tvToDoItem"
             android:layout_width="120dp"
             android:layout_height="match_parent"
             android:text="Task"
-            android:layout_weight="0.15"
-            android:layout_gravity="center_vertical"
-            style="@style/ListViewText"/>
+            android:layout_weight="0.15"/>
 
         <EditText
             android:id="@+id/etToDoDate"
             android:layout_width="50dp"
             android:layout_height="match_parent"
-            android:text="MM/DD/YYYY"
+            android:hint="MM/DD/YYYY"
             android:layout_weight="0.06"
-            android:layout_gravity="center_vertical"
-            android:focusable="false"
-            style="@style/ListViewText" />
+            android:focusable="false" />
     </LinearLayout>
-
-
 </LinearLayout>

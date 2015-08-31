@@ -7,6 +7,7 @@ import android.app.DialogFragment;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -29,23 +30,21 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
-public class ToDoActivity extends AppCompatActivity {
+public class ToDoActivity extends AppCompatActivity implements View.OnClickListener{
     ArrayList<ToDoItem> items;
-  //  ArrayList<String> itemStrings;
-
     ToDoItemAdapter myAdapter;
-
-    ArrayAdapter<String> itemStringsAdapter;
     ListView lvItems;
-    EditText etDueDate;
     ToDoItemDatabase db;
 
     static final String TODO_ITEM_DETAIL_KEY = "ToDoItemDetailKey";
     static final String TODO_POSITION_KEY = "ToDoPosition";
     static final String TODO_ITEM_OBJECT_KEY = "ToDoItemObjectKey";
     static final String TAG = "ToDoActivity.java";
-
     private final int REQUEST_CODE = 20;
+
+    private EditText etDueDate;
+    private DatePickerDialog dueDateDialog;
+    private SimpleDateFormat dateFormatter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,15 +55,9 @@ public class ToDoActivity extends AppCompatActivity {
         db = ToDoItemDatabase.getInstance(this);
       //  db.deleteAllToDoItems();
         readItems();
-
         lvItems = (ListView)findViewById(R.id.lvItems);
-        etDueDate = (EditText)findViewById(R.id.etToDoDate);
         myAdapter = new ToDoItemAdapter(this, items);
         lvItems.setAdapter(myAdapter);
-
-        /**itemStringsAdapter = new ArrayAdapter<>(this,
-                android.R.layout.simple_list_item_1, itemStrings);
-        lvItems.setAdapter(itemStringsAdapter);**/
 
         //Show action bar icon
         getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -72,9 +65,26 @@ public class ToDoActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayUseLogoEnabled(true);
 
         setupListViewListener();
-
+        dateFormatter = new SimpleDateFormat("MM-dd-yyyy", Locale.US);
+        //setDateTimeField();
     }
 
+    private void setDateTimeField() {
+        // This method is causing a NullPointerException
+        // I believe it is because etToDoDate is in item_todo.xml, which is
+        //   the custom xml for listview items, instead of activity_todo.xml
+        etDueDate = (EditText)findViewById(R.id.etToDoDate);
+        etDueDate.setInputType(InputType.TYPE_NULL);
+        etDueDate.setOnClickListener(this);
+        Calendar newCalendar = Calendar.getInstance();
+        dueDateDialog = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
+            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                Calendar newDate = Calendar.getInstance();
+                newDate.set(year, monthOfYear, dayOfMonth);
+                etDueDate.setText(dateFormatter.format(newDate.getTime()));
+            }
+        }, newCalendar.get(Calendar.YEAR), newCalendar.get(Calendar.MONTH), newCalendar.get(Calendar.DAY_OF_MONTH));
+    }
 
     private void setupListViewListener() {
         // Long click is used to delete an item from the list
@@ -109,7 +119,6 @@ public class ToDoActivity extends AppCompatActivity {
                         i.putExtra(TODO_ITEM_DETAIL_KEY, items.get(position).getItem());
                         i.putExtra(TODO_ITEM_OBJECT_KEY, items.get(position).getId());
                         // delete item and re-add edited text item instead of update
-                        //db.deleteToDoItem((String) lvItems.getItemAtPosition(position));
                         db.deleteToDoItem(items.get(position).getItem());
                         startActivityForResult(i, REQUEST_CODE);
                     }
@@ -121,14 +130,11 @@ public class ToDoActivity extends AppCompatActivity {
         EditText etNewItem = (EditText)findViewById(R.id.etNewItem);
         String itemText = etNewItem.getText().toString();
         if (!itemText.isEmpty()) { //don't allow empty todoitems
-            //   itemStringsAdapter.add(itemText);
             etNewItem.setText("");
 
             ToDoItem newItem = new ToDoItem(itemText, null, 0);
             long primaryKey = writeItem(newItem);
             newItem.setId(primaryKey);
-            newItem.setDueDate("08/29/2015");
-            //items.add(newItem);
             myAdapter.add(newItem);
         }
     }
@@ -136,16 +142,9 @@ public class ToDoActivity extends AppCompatActivity {
     private void readItems() {
         try {
             items = db.getAllToDoItems();
-            //itemStrings = new ArrayList<String>();
-            /**for (ToDoItem tdi : items ) {
-                //itemStrings.add(tdi.getItem());
-                items.add(tdi);
-            }**/
         } catch (Exception e) {
-            //itemStrings = new ArrayList<String>();
             items = new ArrayList<ToDoItem>();
         }
-
     }
 
     private long writeItem(ToDoItem tdi) {
@@ -164,10 +163,8 @@ public class ToDoActivity extends AppCompatActivity {
         if (resultCode == RESULT_OK && requestCode == REQUEST_CODE) {
             String editedText = data.getExtras().getString(TODO_ITEM_DETAIL_KEY);
             int itemPosition = data.getExtras().getInt(TODO_POSITION_KEY);
-    //        ToDoItem tdi = (ToDoItem)data.getSerializableExtra(TODO_ITEM_OBJECT_KEY);
             ToDoItem tdi = items.get(itemPosition);
             tdi.setItem(editedText);
-            //itemStrings.set(itemPosition, editedText);
             items.set(itemPosition,tdi);
             myAdapter.notifyDataSetChanged();
             writeItem(tdi);
@@ -196,5 +193,10 @@ public class ToDoActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-
+    @Override
+    public void onClick(View v) {
+        if (v == etDueDate) {
+            dueDateDialog.show();
+        }
+    }
 }

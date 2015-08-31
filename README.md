@@ -4,7 +4,7 @@
 
 Submitted by: **Joanna Illing**
 
-Time spent: **30** hours spent in total
+Time spent: **35** hours spent in total
 
 ## User Stories
 
@@ -18,7 +18,7 @@ The following **optional** features are implemented:
 
 * [X] Persist the todo items [into SQLite](http://guides.codepath.com/android/Persisting-Data-to-the-Device#sqlite) instead of a text file
 * [X] Improve style of the todo items in the list [using a custom adapter](http://guides.codepath.com/android/Using-an-ArrayAdapter-with-ListView)
-* [ ] Add support for completion due dates for todo items (and display within listview item)
+* [X] Add support for completion due dates for todo items (and display within listview item)
 * [ ] Use a [DialogFragment](http://guides.codepath.com/android/Using-DialogFragment) instead of new Activity for editing items
 * [ ] Add support for selecting the priority of each todo item (and display in listview item)
 * [X] Tweak the style improving the UI / UX, play with colors, images or backgrounds
@@ -58,11 +58,11 @@ edit activity. I used my Android phone to test the app to ensure that the Add It
 visible when the on-screen keyboard is active.
 
 I have spent a significant amount of time working to implement the completion dates feature and am having
-a difficult time getting it to perform as expected. I think I have all the parts but am not sure how to
+a few issues getting it to perform as expected. I think I have all the parts but am not sure how to
 stitch them together at a high level. I will continue to work on this but want to make sure
 that the admissions team is aware that I have spent many hours working on this feature. I would
 like to add documentation to the Codepath guides to help other developers with using DatePickerDialog
-once I figure it out.
+once I figure it out. I will add issues to the project to detail.
 
 
 ## License

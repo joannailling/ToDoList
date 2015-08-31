@@ -17,7 +17,7 @@ public class ToDoItemAdapter extends ArrayAdapter<ToDoItem> {
 
     private static class ViewHolder {
         TextView toDoItem;
-        TextView dueDate;
+        EditText dueDate;
     }
 
     public ToDoItemAdapter(Context context, ArrayList<ToDoItem> items) {
@@ -41,10 +41,6 @@ public class ToDoItemAdapter extends ArrayAdapter<ToDoItem> {
         } else {
             viewHolder = (ViewHolder)convertView.getTag();
         }
-
-        // Lookup view for data population
-        //TextView tvName = (TextView) convertView.findViewById(R.id.tvToDoTask);
-        //TextView tvHome = (TextView) convertView.findViewById(R.id.tvToDoDate);
 
         // Populate the data into the template view using the data object
         viewHolder.toDoItem.setText(tdi.getItem());
