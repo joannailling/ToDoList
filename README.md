@@ -4,7 +4,7 @@
 
 Submitted by: **Joanna Illing**
 
-Time spent: **25** hours spent in total
+Time spent: **30** hours spent in total
 
 ## User Stories
 
@@ -21,7 +21,7 @@ The following **optional** features are implemented:
 * [ ] Add support for completion due dates for todo items (and display within listview item)
 * [ ] Use a [DialogFragment](http://guides.codepath.com/android/Using-DialogFragment) instead of new Activity for editing items
 * [ ] Add support for selecting the priority of each todo item (and display in listview item)
-* [ ] Tweak the style improving the UI / UX, play with colors, images or backgrounds
+* [X] Tweak the style improving the UI / UX, play with colors, images or backgrounds
 
 The following **additional** features are implemented:
 
@@ -56,6 +56,13 @@ I noticed that the Genymotion emulator does not display the on-screen keyboard. 
 to show the onscreen keyboard because it affects the screen layouts for both the main activity and the 
 edit activity. I used my Android phone to test the app to ensure that the Add Item and Save buttons are still
 visible when the on-screen keyboard is active.
+
+I have spent a significant amount of time working to implement the completion dates feature and am having
+a difficult time getting it to perform as expected. I think I have all the parts but am not sure how to
+stitch them together at a high level. I will continue to work on this but want to make sure
+that the admissions team is aware that I have spent many hours working on this feature. I would
+like to add documentation to the Codepath guides to help other developers with using DatePickerDialog
+once I figure it out.
 
 
 ## License
