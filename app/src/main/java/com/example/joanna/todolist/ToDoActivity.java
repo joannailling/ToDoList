@@ -117,7 +117,7 @@ public class ToDoActivity extends AppCompatActivity {
         );
     }
 
-    protected void onAddItem(View v) {
+    public void onAddItem(View v) {
         EditText etNewItem = (EditText)findViewById(R.id.etNewItem);
         String itemText = etNewItem.getText().toString();
         if (!itemText.isEmpty()) { //don't allow empty todoitems
@@ -131,7 +131,6 @@ public class ToDoActivity extends AppCompatActivity {
             //items.add(newItem);
             myAdapter.add(newItem);
         }
-
     }
 
     private void readItems() {
