@@ -174,42 +174,6 @@ public class ToDoItemDatabase extends SQLiteOpenHelper {
         }
     }
 
- /**
-    public void deleteToDoItem(ToDoItem tdi) {
-        // create and/or open the db for writing
-        SQLiteDatabase db = getWritableDatabase();
-        long toDoItemID = -1;
-
-        // get the primary key (id) of the toDoItem we are trying to delete
-        String toDoItemSelectQuery = String.format("SELECT %s FROM %s WHERE %s = ?",
-                KEY_TODOITEMS_ID, TABLE_TODOITEMS, KEY_TODOITEMS_ITEM);
-        Cursor cursor = db.rawQuery(toDoItemSelectQuery,
-                new String[]{String.valueOf(tdi.getItem())});
-        try {
-            if (cursor.moveToFirst()) {
-                toDoItemID = cursor.getInt(0);
-                db.setTransactionSuccessful();
-            }
-        } finally {
-            if (cursor != null && !cursor.isClosed()) {
-                cursor.close();
-            }
-        }
-
-        String deleteWhereClause = String.format("%s = %s", KEY_TODOITEMS_ID, toDoItemID);
-
-        //wrap insert in a transaction to help w performance and ensure db consistency
-        db.beginTransaction();
-        try {
-            db.delete(TABLE_TODOITEMS, deleteWhereClause, null);
-            db.setTransactionSuccessful();
-        } catch (Exception e) {
-            Log.d(TAG, "Error while trying to delete a post from the database");
-        } finally {
-            db.endTransaction();
-        }
-    } **/
-
     public void deleteToDoItem(String itemString) {
         // create and/or open the db for writing
         SQLiteDatabase db = getWritableDatabase();

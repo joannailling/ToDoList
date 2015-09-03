@@ -4,7 +4,7 @@
 
 Submitted by: **Joanna Illing**
 
-Time spent: **35** hours spent in total
+Time spent: **38** hours spent in total
 
 ## User Stories
 
@@ -56,13 +56,6 @@ I noticed that the Genymotion emulator does not display the on-screen keyboard. 
 to show the onscreen keyboard because it affects the screen layouts for both the main activity and the 
 edit activity. I used my Android phone to test the app to ensure that the Add Item and Save buttons are still
 visible when the on-screen keyboard is active.
-
-I have spent a significant amount of time working to implement the completion dates feature and am having
-a few issues getting it to perform as expected. I think I have all the parts but am not sure how to
-stitch them together at a high level. I will continue to work on this but want to make sure
-that the admissions team is aware that I have spent many hours working on this feature. I would
-like to add documentation to the Codepath guides to help other developers with using DatePickerDialog
-once I figure it out. I will add issues to the project to detail.
 
 
 ## License
